@@ -17,6 +17,9 @@ import (
 
 func dummy_mux() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "<html><body>hello</body></html>")
+	})
 	mux.HandleFunc("/demo/tile", func(w http.ResponseWriter, r *http.Request) {
 		// Small 40x40 png
 		w.Write([]byte{
@@ -31,6 +34,7 @@ func dummy_mux() http.Handler {
 	})
 
 	mux.HandleFunc("/demo/tiles", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("received!!!")
 		io.WriteString(w, "<html><head><style>img{width:40px;height:40px;}</style></head><body>")
 		for i := 0; i < 200; i++ {
 			fmt.Fprintf(w, `<img src="/demo/tile?cachebust=%d">`, i)
@@ -78,6 +82,6 @@ func conn_setup(socket_path string) (net.PacketConn, error) {
 func setup_tls() (*tls.Config, error) {
 	return &tls.Config{
 		InsecureSkipVerify: true,
-		NextProtos:         []string{"h3-29"},
+		NextProtos:         []string{"something"},
 	}, nil
 }
